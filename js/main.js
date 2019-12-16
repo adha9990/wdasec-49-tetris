@@ -129,7 +129,7 @@ function teach2(){//教學2
 }
 function start(){//開始遊戲
     control.font = font.value;
-    fetch("php/max_score.php").then(res=>res.text()).then(res=>$("#max_score").text(res));
+    //fetch("php/max_score.php").then(res=>res.text()).then(res=>$("#max_score").text(res));
     control.play = true;
     $("#start").modal("hide");
     control.preload = new square(Math.floor(Math.random()*7));
