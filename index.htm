@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>tetris</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/button.css">
+</head>
+
+<body class="alert-primary">
+    <!-- 教學模式 -->
+    <div id="teach" class="container-fluid bg-light" style="display:none;width:768px;height:1024px;padding:0;">
+        <img src="img/1.jpg" alt="teach" onclick="$(this).hide();$('#img2').show()" id="img1" class="w-100">
+        <img src="img/2.jpg" alt="teach" style="display:none;" onclick="$(this).hide();$('#img3').show()" id="img2" class="w-100">
+        <img src="img/3.jpg" alt="teach" style="display:none;" onclick="$(this).hide();$('#img4').show()" id="img3" class="w-100">
+        <img src="img/4.jpg" alt="teach" style="display:none;" onclick="$(this).hide();teach2()" id="img4" class="w-100">
+    </div>
+    <div id="area" class="container-fluid bg-light" style="width:768px;height:1024px;">
+        <!-- 統計區塊 -->
+        <div class="row">
+            <table class="table table-bordered text-center">
+                <thead class="thead thead-dark">
+                    <tr>
+                        <th>I</th>
+                        <th>J</th>
+                        <th>L</th>
+                        <th>O</th>
+                        <th>S</th>
+                        <th>T</th>
+                        <th>Z</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="I">0</td>
+                        <td id="J">0</td>
+                        <td id="L">0</td>
+                        <td id="O">0</td>
+                        <td id="S">0</td>
+                        <td id="T">0</td>
+                        <td id="Z">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row my-4">
+            <div class="col-8">
+                <!-- 主遊戲區塊 -->
+                <h5 class="text-danger position-absolute mt-4" style="margin-left:80px;display:none;opacity: .5;" id="cheat">CHEAT</h5>
+                <table id="load" class="mx-auto"></table>
+            </div>
+            <div class="col-4">
+                <!-- 預覽區塊 -->
+                <table id="preload" class="m-auto"></table>
+                <!-- logo -->
+                <div class="row">
+                    <img src="img/logo.png" alt="logo" class="w-100 mt-2">
+                </div>
+                <!-- 玩家資訊 -->
+                <table class="table mx-auto my-2 text-center">
+                    <tr>
+                        <th>等級</th>
+                        <td id="level">簡易</td>
+                    </tr>
+                    <tr>
+                        <th>行數</th>
+                        <td id="lines">0</td>
+                    </tr>
+                    <tr>
+                        <th>計時器</th>
+                        <td id="time">00:00</td>
+                    </tr>
+                    <tr>
+                        <th>最高分</th>
+                        <td id="max_score">0</td>
+                    </tr>
+                    <tr>
+                        <th>得分</th>
+                        <td id="score">0</td>
+                    </tr>
+                </table>
+                <!-- 字體大小 -->
+                <div class="row">
+                    <div class="col-6">
+                        <div class="button" onclick="control.font++"><span>A+</span></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="button" onclick="control.font--"><span>A-</span></div>
+                    </div>
+                </div>
+                <!-- 按鈕區塊 -->
+                <div class="row my-3">
+                    <div class="col-12">
+                        <button class="w-100 btn btn-outline-primary" onclick="pause()">暫停遊戲</button>
+                    </div>
+                    <div class="col-12 my-3">
+                        <button class="w-100 btn btn-outline-primary" id="teach_btn" style="display:none;" onclick="location.reload()">退出教學</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="iPad" style="display:none;">
+            <div class="col-8">
+                <div class="row">
+                    <button class="btn btn-outline-primary w-25 mx-auto" onclick="control.load.up()">up</button>
+                </div>
+                <div class="row my-3">
+                    <div class="col-6">
+                        <div class="row">
+                            <button class="mx-auto btn btn-outline-primary w-50" onclick="control.load.left()">left</button>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <button class="mx-auto btn btn-outline-primary w-50" onclick="control.load.right()">right</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn btn-outline-primary w-25 mx-auto" onclick="control.load.down()">bottom</button>
+                </div>
+            </div>
+            <div class="col-4 mt-2">
+                <div class="row mt-5">
+                    <button class="btn w-50 btn-outline-primary mx-auto" onclick="control.load.under()">enter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="start">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal modal-content">
+                <img src="img/logo.png" alt="logo" class="w-100">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3 text-center pt-2">字體大小</div>
+                        <div class="col-9">
+                            <input type="number" id="font" onchange="$('*')[0].style.fontSize = this.value+'px'" class="form-control" value="16">
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-3 text-center pt-2">遊戲難度</div>
+                        <div class="col-9">
+                            <select onchange="control.level = this.value" class="form-control">
+                                <option value="0">簡易</option>
+                                <option value="1">正常</option>
+                                <option value="2">困難</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <button type="button" onclick="teach()" class="w-100 btn btn-outline-primary">教學模式</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" onclick="start()" id="start_btn" class="w-100 btn btn-outline-primary">開始遊戲</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="gameover">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal modal-content">
+                <div class="modal-body">
+                    <div id="is_cheat" style="display:none;">
+                        <h1 class="text-center">排行表</h1>
+                        <p>遊戲難度: <span id="nlevel"></span></p>
+                        <div style="height:400px;overflow-y:auto;">
+                            <table class="table table-bordered">
+                                <thead class="thead thead-dark text-center">
+                                    <tr>
+                                        <th>排名</th>
+                                        <th>行</th>
+                                        <th>得分</th>
+                                        <th>時間</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center" id="rank" ></tbody>
+                            </table>
+                        </div>                            
+                    </div>
+                    <div class="row">
+                        <button class="mx-auto w-50 btn btn-outline-primary" onclick="location.reload()">重啟遊戲</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/square.js"></script>
+    <script>init();</script>
+</body>
+</html>
