@@ -49,7 +49,7 @@ class square{
     }
     sweep(){//消方塊
         let count = 0;
-        for(let y = 0;y<20;y++){
+        for(let y = 0;y<24;y++){
             let check = true;
             for(let x=0;x<10;x++){
                 if(l(y,x).style.backgroundColor=="white") check = false;
